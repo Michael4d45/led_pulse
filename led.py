@@ -4,9 +4,7 @@ import requests
 import json
 import termplotlib as tpl
 import numpy as np
-import os
-
-API_KEY = os.environ['API_KEY']
+from settings import API_KEY
 
 url = "http://api.openweathermap.org/data/2.5/weather"
 
