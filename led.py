@@ -43,7 +43,7 @@ RED.start(0)
 BLUE.start(0)
 
 
-Clear = lambda: os.system('cls')
+Clear = lambda: os.system('clear')
 
 
 def flashTemp(T):
