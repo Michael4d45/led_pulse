@@ -6,6 +6,8 @@ import termplotlib as tpl
 import numpy as np
 from settings import API_KEY
 
+print("begin")
+
 url = "http://api.openweathermap.org/data/2.5/weather"
 
 querystring = {"zip":"84602,us","APPID": API_KEY}
