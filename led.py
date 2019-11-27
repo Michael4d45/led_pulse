@@ -8,8 +8,6 @@ from settings import API_KEY
 
 url = "http://api.openweathermap.org/data/2.5/weather"
 
-print('Why you no work?')
-
 querystring = {"zip":"84602,us","APPID": API_KEY}
 
 
