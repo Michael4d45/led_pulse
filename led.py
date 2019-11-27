@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Nov 26 22:40:42 2019
-
-@author: armen
-"""
-
-#%%
-
 import os
 import time
 import RPi.GPIO as GPIO 
@@ -15,6 +6,8 @@ import json
 import termplotlib as tpl
 import numpy as np
 from settings import API_KEY
+
+print('Connected')
 
 url = "http://api.openweathermap.org/data/2.5/weather"
 
