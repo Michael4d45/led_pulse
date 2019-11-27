@@ -1,4 +1,3 @@
-import os
 import time
 import RPi.GPIO as GPIO 
 import requests
@@ -6,8 +5,6 @@ import json
 import termplotlib as tpl
 import numpy as np
 from settings import API_KEY
-
-print('Connected')
 
 url = "http://api.openweathermap.org/data/2.5/weather"
 
@@ -29,7 +26,6 @@ def getWeather():
     print(temp)
     return temp
 
-
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(12, GPIO.OUT)
 GPIO.setup(18, GPIO.OUT)
@@ -42,32 +38,28 @@ RED = GPIO.PWM(18,50) #Channel 18 #Frequency 50Hz
 RED.start(0)
 BLUE.start(0)
 
+time1 = time.time()
+delta = 10*60
 
-Clear = lambda: os.system('cls')
+temp = getWeather()
 
+temps = np.array([temp,temp])
+times = np.array([0,0])
 
-def flashTemp(T):
-    if T>=90:
-        for dc in range (0,101,5):
-            RED.ChangeDutyCycle(dc)
-            time.sleep(.01)
-        for dc in range(100,-1,-5):
-            RED.ChangeDutyCycle(dc)
-            time.sleep(.01)
-        for dc in range (0,101,5):
-            RED.ChangeDutyCycle(dc)
-            time.sleep(.01)
-        for dc in range(100,-1,-5):
-            RED.ChangeDutyCycle(dc)
-            time.sleep(.01)
-    if T<90 and T>32:
-        for dc in range (0,101,5):
-            RED.ChangeDutyCycle(dc)
-            time.sleep(.1)
-        for dc in range(100,-1,-5):
-            RED.ChangeDutyCycle(dc)
-            time.sleep(.1)
-    if T<=32 and T>0:
+while True:
+    time2 = time.time()
+    if time2 - time1 >= delta:
+        time1 = time.time()
+        temp = getWeather()
+        temps = np.append(temps,temp)
+        times = np.append(times,times[-1]+1)
+        if len(times)>12 * 6:
+            times = times[1:]
+            temps = temps[1:]
+        fig = tpl.figure()
+        fig.plot(times,temps)
+        fig.show()
+    if  temp > 32.:
         for dc in range (0,101,5):
             BLUE.ChangeDutyCycle(dc)
             time.sleep(.1)
@@ -76,56 +68,14 @@ def flashTemp(T):
             time.sleep(.1)
     else:
         for dc in range (0,101,5):
-            BLUE.ChangeDutyCycle(dc)
-            time.sleep(.01)
+            RED.ChangeDutyCycle(dc)
+            time.sleep(.1)
         for dc in range(100,-1,-5):
-            BLUE.ChangeDutyCycle(dc)
-            time.sleep(.01)
-        for dc in range (0,101,5):
-            BLUE.ChangeDutyCycle(dc)
-            time.sleep(.01)
-        for dc in range(100,-1,-5):
-            BLUE.ChangeDutyCycle(dc)
-            time.sleep(.01)
-
-
-temp = getWeather()
-temps = [temp]
-times = [0]
-wait = 10 #s
-
-
-def Append():
-    global temp
-    global temps
-    global times
-    temp = getWeather()
-    temps.insert(0,temp)
-    times.append(times[-1]-wait/3600)
-    if len(times)>24*3600/wait:
-        times = times[0:24*3600/wait]
-        temps = temps[0:24*3600/wait]
-        
-        
-def Plot():
-    fig = tpl.figure()
-    fig.plot(times,temps)
-    fig.show()
-        
-    
-start = time.time()
-
-
-while True:
-    now = time.time()
-    if now - start >= wait:
-        start = time.time()
-        Clear()
-        Append()
-        Plot()
-    flashTemp(temp)
+            RED.ChangeDutyCycle(dc)
+            time.sleep(.1)
     time.sleep(1)
 
 RED.stop()
 BLUE.stop()
 GPIO.cleanup()
+
