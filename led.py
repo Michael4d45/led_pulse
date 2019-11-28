@@ -8,7 +8,7 @@ from settings import API_KEY
 
 url = "http://api.openweathermap.org/data/2.5/weather"
 
-querystring = {"zip":"84604,us","APPID": API_KEY}
+querystring = {"zip":"32003,us","APPID": API_KEY}
 
 payload = ""
 
