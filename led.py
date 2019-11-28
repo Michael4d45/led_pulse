@@ -8,7 +8,7 @@ from settings import API_KEY
 
 url = "http://api.openweathermap.org/data/2.5/weather"
 
-querystring = {"zip":"32003,us","APPID": API_KEY}
+querystring = {"zip":"58501,us","APPID": API_KEY}
 
 payload = ""
 
@@ -41,7 +41,7 @@ Clear = lambda: os.system('clear')
 temp = getWeather()
 temps = [temp]
 times = [0]
-wait = 600 #s
+wait = 10 #s
 
 
 def Append():
@@ -70,14 +70,14 @@ def flashTemp():
         for dc in range(100,-1,-5):
             RED.ChangeDutyCycle(dc)
             time.sleep(.01)
-    if temp<90 and temp>32:
+    elif temp<90 and temp>32:
         for dc in range (0,101,5):
             RED.ChangeDutyCycle(dc)
             time.sleep(.1)
         for dc in range(100,-1,-5):
             RED.ChangeDutyCycle(dc)
             time.sleep(.1)
-    if temp<=32 and temp>0:
+    elif temp<=32 and temp>0:
         for dc in range (0,101,5):
             BLUE.ChangeDutyCycle(dc)
             time.sleep(.1)
