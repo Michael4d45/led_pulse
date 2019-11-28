@@ -41,7 +41,7 @@ Clear = lambda: os.system('clear')
 temp = getTemp()
 temps = [temp]
 times = [0]
-wait = 10 #s
+wait = 600 #s
 
 
 def Append(temps,times):
