@@ -8,7 +8,7 @@ from settings import API_KEY
 
 url = "http://api.openweathermap.org/data/2.5/weather"
 
-querystring = {"zip":"32003,us","APPID": API_KEY}
+querystring = {"zip":"84604,us","APPID": API_KEY}
 
 payload = ""
 
@@ -22,8 +22,8 @@ GPIO.setmode(GPIO.BOARD)
 GPIO.setup(12, GPIO.OUT)
 GPIO.setup(18, GPIO.OUT)
 
-BLUE = GPIO.PWM(12,50) #Channel 12 #Frequency 50Hz
-RED = GPIO.PWM(18,50) #Channel 18 #Frequency 50Hz
+BLUE = GPIO.PWM(18,50) #Channel 18 #Frequency 50Hz
+RED = GPIO.PWM(12,50) #Channel 12 #Frequency 50Hz
 
 RED.start(0)
 BLUE.start(0)
