@@ -8,7 +8,7 @@ from settings import API_KEY
 
 url = "http://api.openweathermap.org/data/2.5/weather"
 
-querystring = {"zip":"84602,us","APPID": API_KEY}
+querystring = {"zip":"58501,us","APPID": API_KEY}
 
 payload = ""
 
@@ -33,7 +33,6 @@ def getWeather():
     response = requests.request('GET', url, data=payload, headers=headers, params=querystring)
     res = json.loads(response.text)
     temperature = round((res['main']['temp'] - 273.15) * 1.8 + 32, 1)
-    print(temperature)
     return temperature
 
 Clear = lambda: os.system('clear')
@@ -42,7 +41,7 @@ Clear = lambda: os.system('clear')
 temp = getWeather()
 temps = [temp]
 times = [0]
-wait = 10 #s
+wait = 600 #s
 
 
 def Append():
