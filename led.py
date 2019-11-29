@@ -57,6 +57,7 @@ Clear = lambda: os.system('clear')
 
 
 temp = getTemp()
+precip = getPrecip()
 temps = [temp]
 times = [0]
 wait = 600 #s
@@ -144,11 +145,11 @@ while True:
     if now - start >= wait:
         start = time.time()
         Append(temps,times)
-        binary = getPrecip()
+        precip = getPrecip()
         Clear()
         Plot()
     flashTemp(temp)
-    flashPrecip(binary)
+    flashPrecip(precip)
     time.sleep(1)
 
 
