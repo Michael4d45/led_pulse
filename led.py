@@ -48,6 +48,7 @@ def getTemp():
 def getPrecip():
     response = requests.request('GET', url, data=payload, headers=headers, params=querystring)
     res = json.loads(response.text)
+    print(res['weather'])
     if res['main']['temp'] < 700:
         return 1
     else:
