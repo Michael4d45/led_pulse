@@ -21,12 +21,15 @@ headers = {
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(12, GPIO.OUT)
 GPIO.setup(18, GPIO.OUT)
+GPIO.setup(32, GPIO.OUT)
 
 BLUE = GPIO.PWM(18,50) #Channel 18 #Frequency 50Hz
 RED = GPIO.PWM(12,50) #Channel 12 #Frequency 50Hz
+GREEN = GPIO.PWM(32,50) #Channel 32 #Frequency 50Hz
 
 RED.start(0)
 BLUE.start(0)
+GREEN.start(0)
 
 
 def getTemp():
@@ -34,6 +37,14 @@ def getTemp():
     res = json.loads(response.text)
     temperature = round((res['main']['temp'] - 273.15) * 1.8 + 32, 1)
     return temperature
+
+def getPrecip()
+    response = requests.request('GET', url, data=payload, headers=headers, params=querystring)
+    res = json.loads(response.text)
+    if res['weather']['id']<700:
+        return 1
+    else:
+        return 0
 
 Clear = lambda: os.system('clear')
 
@@ -93,6 +104,24 @@ def flashTemp(T):
         for dc in range(100,-1,-5):
             BLUE.ChangeDutyCycle(dc)
             time.sleep(.01)
+                
+def flashPrecip(binary):
+    if binary == 1:
+        for dc in range (0,101,5):
+            GREEN.ChangeDutyCycle(dc)
+            time.sleep(.01)
+        for dc in range(100,-1,-5):
+            GREEN.ChangeDutyCycle(dc)
+            time.sleep(.01)
+        for dc in range (0,101,5):
+            GREEN.ChangeDutyCycle(dc)
+            time.sleep(.01)
+        for dc in range(100,-1,-5):
+            GREEN.ChangeDutyCycle(dc)
+            time.sleep(.01)
+    else:
+        GREEN.ChangeDutyCycle(0)
+                
             
 def Plot():
     fig = tpl.figure()
@@ -108,9 +137,11 @@ while True:
     if now - start >= wait:
         start = time.time()
         Append(temps,times)
+        binary = getPrecip()
         Clear()
         Plot()
     flashTemp(temp)
+    flashPrecip(binary)
     time.sleep(1)
 
 
