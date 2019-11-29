@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Nov 29 15:19:36 2019
+
+@author: armen
+"""
+
 import os
 import time
 import RPi.GPIO as GPIO 
@@ -38,7 +45,7 @@ def getTemp():
     temperature = round((res['main']['temp'] - 273.15) * 1.8 + 32, 1)
     return temperature
 
-def getPrecip()
+def getPrecip():
     response = requests.request('GET', url, data=payload, headers=headers, params=querystring)
     res = json.loads(response.text)
     if res['weather']['id']<700:
@@ -60,8 +67,8 @@ def Append(temps,times):
     temps.insert(0,temp)
     times.append(times[-1]-wait/3600)
     if len(times)>24*3600/wait:
-        times = times[0:24*3600/wait]
-        temps = temps[0:24*3600/wait]
+        times = times[0:int(24*3600/wait)]
+        temps = temps[0:int(24*3600/wait)]
 
 def flashTemp(T):
     if T>=90:
