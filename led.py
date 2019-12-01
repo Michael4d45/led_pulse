@@ -31,6 +31,8 @@ RED.start(0)
 BLUE.start(0)
 GREEN.start(0)
 
+wait = 600 #s
+
 def Clear():
     os.system('clear')
 
@@ -75,12 +77,6 @@ def getWeather():
     return temperature,precip
 
 
-temp,precip = getWeather()
-temps = [temp]
-times = [0]
-wait = 600 #s
-
-
 def Append(temp,temps,times):
     temps.insert(0,temp)
     times.append(times[-1]-wait/3600)
@@ -96,13 +92,16 @@ def flashPrecip(binary):
         GREEN.ChangeDutyCycle(0)
                 
             
-def Plot():
+def Plot(times,temps):
     fig = tpl.figure()
     fig.plot(times,temps)
     fig.show()
         
 
 def Start():
+    temp,precip = getWeather()
+    temps = [temp]
+    times = [0]
     start = time.time()
     while True:
         now = time.time()
@@ -111,7 +110,7 @@ def Start():
             temp,precip = getWeather()
             Append(temp,temps,times)
             Clear()
-            Plot()
+            Plot(times,temps)
         flashTemp(temp)
         flashPrecip(precip)
         time.sleep(1)
