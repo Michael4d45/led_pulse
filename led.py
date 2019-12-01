@@ -31,7 +31,7 @@ RED.start(0)
 BLUE.start(0)
 GREEN.start(0)
 
-wait = 600 #s
+wait = 10 #s
 
 def Clear():
     os.system('clear')
@@ -42,7 +42,7 @@ def blink(COLOR, t):
         COLOR.ChangeDutyCycle(dc)
         time.sleep(t)
     for dc in range(100,-1,-5):
-        RED.ChangeDutyCycle(dc)
+        COLOR.ChangeDutyCycle(dc)
         time.sleep(t)
 
 
