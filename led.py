@@ -31,7 +31,7 @@ RED.start(0)
 BLUE.start(0)
 GREEN.start(0)
 
-wait = 10 #s
+wait = 600 #s
 
 def Clear():
     os.system('clear')
