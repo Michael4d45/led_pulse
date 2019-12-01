@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Nov 29 15:19:36 2019
-
-@author: armen, harvey
-"""
-
 import os
 import time
 import RPi.GPIO as GPIO 
@@ -39,21 +31,8 @@ RED.start(0)
 BLUE.start(0)
 GREEN.start(0)
 
-blink(RED, 0)
-blink(BLUE, 0)
-blink(GREEN, 0)
-
-temp = getTemp()
-precip = getPrecip()
-temps = [temp]
-times = [0]
-wait = 600 #10 min in seconds
-max_plot_len = int(24*3600/wait)
-
-start()
-end()
-
-clear = lambda: os.system('clear')
+def Clear():
+    os.system('clear')
 
 
 def blink(COLOR, t):
@@ -72,69 +51,77 @@ def quickBlink(COLOR):
 
 def slowBlink(COLOR):
     blink(COLOR, .1)
+    
 
-
-def flashTemp():
-    if temp >= 90:
+def flashTemp(T):
+    if T>=90:
         quickBlink(RED)
-    elif temp < 90 and temp > 32:
+    elif T<90 and T>32:
         slowBlink(RED)
-    elif temp <= 32 and temp > 0:
+    elif T<=32 and T>0:
         slowBlink(BLUE)
     else:
         quickBlink(BLUE)
 
 
-def flashPrecip():
-    if precip == 1:
-        quickBlink(GREEN)
-    else:
-        GREEN.ChangeDutyCycle(0)
-
-
-def getTemp():
-    #request weather
+def getWeather():
     response = requests.request('GET', url, data=payload, headers=headers, params=querystring)
     res = json.loads(response.text)
-    #convert Kelvin to Fahrenheit
-    temp = round((res['main']['temp'] - 273.15) * 1.8 + 32, 1)
-    if res['weather'][0]['id'] or res['weather'][-1]['id'] < 700:
+    temperature = round((res['main']['temp'] - 273.15) * 1.8 + 32, 1)
+    if res['weather'][0]['id'] < 700:
         precip = 1
     else:
         precip = 0
+    return temperature,precip
 
 
-def append():
+temp,precip = getWeather()
+temps = [temp]
+times = [0]
+wait = 600 #s
+
+
+def Append(temp,temps,times):
     temps.insert(0,temp)
     times.append(times[-1]-wait/3600)
-    if len(times)>max_plot_len:
-        times = times[0:max_plot_len]
-        temps = temps[0:max_plot_len]
-
-
-def plot():
-    clear()
+    if len(times)>24*3600/wait:
+        times = times[0:int(24*3600/wait)]
+        temps = temps[0:int(24*3600/wait)]
+        
+                
+def flashPrecip(binary):
+    if binary == 1:
+        quickBlink(GREEN)
+    else:
+        GREEN.ChangeDutyCycle(0)
+                
+            
+def Plot():
     fig = tpl.figure()
-    fig.plot(times, temps)
+    fig.plot(times,temps)
     fig.show()
+        
 
-
-def start():
+def Start():
     start = time.time()
     while True:
         now = time.time()
         if now - start >= wait:
             start = time.time()
-            getWeather()
-            append()
-            plot()
-        flashTemp()
-        flashPrecip()
+            temp,precip = getWeather()
+            Append(temp,temps,times)
+            Clear()
+            Plot()
+        flashTemp(temp)
+        flashPrecip(precip)
         time.sleep(1)
 
 
-def end():
+def End():
     RED.stop()
     BLUE.stop()
     GPIO.cleanup()
-
+    
+    
+Start()
+End()
